@@ -3,7 +3,7 @@
 ```js
 // Youtube_Data_Scraping_Title_Prediction
 
-const keywords = ['컴퓨터', '강아지', '선택']
+const keywords = ["김뿡", "픽셀", "트위치", "스트리머", "유튜버", "템템버린", "주르르"];
 
 const key_search = searchByKeyword("컴퓨터")
 
@@ -16,15 +16,15 @@ Logger.log(searchByChannelID(key_search['channelIDs']))
 let spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
 let activeSheet = spreadSheet.getActiveSheet();
 
-let data_scraped = dataScraper(keywords)
-Logger.log(data_scraped)
+let data_scraped = dataScraper(keywords);
+Logger.log(data_scraped);
 
 activeSheet.getRange(1, 1, 1, 5).setValues([['Titles', 'VideoIDs', 'ChannelIDs', 'Views', 'Subs_count']])
 activeSheet.getRange(2, 1, data_scraped.title.length, 1).setValues(data_scraped.title)
-activeSheet.getRange(2, 2, data_scraped.videoIDs.length, 1).setValue(data_scraped.videoIDs)
-activeSheet.getRange(2, 3, data_scraped.channelIDs.length, 1).setValue(data_scraped.channelIDs)
-activeSheet.getRange(2, 4, data_scraped.views.length, 1).setValue(data_scraped.views)
-activeSheet.getRange(2, 5, data_scraped.subs_count.length, 1).setValue(data_scraped.subs_count)
+activeSheet.getRange(2, 2, data_scraped.videoIDs.length, 1).setValues(data_scraped.videoIDs)
+activeSheet.getRange(2, 3, data_scraped.channelIDs.length, 1).setValues(data_scraped.channelIDs)
+activeSheet.getRange(2, 4, data_scraped.views.length, 1).setValues(data_scraped.views)
+activeSheet.getRange(2, 5, data_scraped.subs_count.length, 1).setValues(data_scraped.subs_count)
 
 function dataScraper(keywords) {
   let title = [];
@@ -65,9 +65,15 @@ function dataScraper(keywords) {
 function searchByKeyword(keyword) {
   const results = YouTube.Search.list('id, snippet', {
     q: keyword,
-    maxResults: 3
+    maxResults: 50
   });
-  let videoIDs = results.items.map(video_info => video_info.id.videoId);
+  let videoIDs = results.items.map(video_info => {
+    if(video_info.id.videoId){
+      return video_info.id.videoId
+    }
+    return "0qfXPIBFyHA"
+  }
+  );
   let channelIDs = results.items.map(video_info => video_info.snippet.channelId);
   let title = results.items.map(video_info => video_info.snippet.title);
   let keyword_search = {
